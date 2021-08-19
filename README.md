@@ -10,6 +10,6 @@ Memory organization: (can change over time)</br>
 0x90000 Stack beginning</br>
 ### Build
 **Linux distro** (arm, x86, whatever architecture you want) is almost mandatory.</br>
-I am writing an auto-build script, please wait.</br>
+Just run the auto-build script, you may need to give it execute right.</br>
 Don't touch bootloaders & kernel files, you can edit :</br>
 **Still in development, this rdme will be edited when time has come.**

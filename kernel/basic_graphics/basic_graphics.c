@@ -5,14 +5,22 @@
 */
 #include "basic_graphics.h"
 
-void printCharacter(char character, int offset, int bgColor, int textColor)
+void printCharacter(char character, int offset, int colorCode)
 {
 	char* characterAddress = (char*)0xB8000;
 	characterAddress += offset*2;
 	*characterAddress = character;
 
 	characterAddress += 1;
-	*characterAddress = 0x52;
+	*characterAddress = colorCode;
+}
 
-	// TODO TAKE bgColor and textColor into account
+void printString(char* string, int offset, int size, int colorCode)
+{
+	int offset_ = offset;
+	for(int i = 0;i<size;i++)
+	{
+		printCharacter(string[i], offset_, colorCode);
+		offset_ += 1;
+	}
 }
