@@ -1,4 +1,4 @@
-#SMOS
+# SMOS
 Small &amp; Modular x86 Operating System
 ## What is SMOS
 It's an **unix-like** operating system, designed to be easily customizable by anyone to create its own OS.</br>
