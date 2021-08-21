@@ -8,5 +8,4 @@ global start
 
 start:
 call kmain
-
-jmp $ ; Security loop in case kmain ret - Should NEVER happen
+jmp $ ; Security loop in case kmain ends execution - Should NEVER happen /!\
