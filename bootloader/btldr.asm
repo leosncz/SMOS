@@ -31,9 +31,9 @@ mov cl, 2d
 int 0x13
 
 ; Ensure video mode is 03 for future kernel use (80x25 16 color text (CGA,EGA,MCGA,VGA))
-mov ah, 0x0
-mov al, 0x3
-int 0x10
+;mov ah, 0x0
+;mov al, 0x3
+;int 0x10
 
 ; Go into pmode
 mov ax, gdtend    ; calcule la limite de GDT

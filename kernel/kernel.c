@@ -1,9 +1,9 @@
 #include "basic_graphics/basic_graphics.h"
 #include "memory/memory.h"
-extern void test();
+
 void kmain()
 {
-	setupGDT(); // Setup GDT again in case of bootloader is not ours.
+	setupMemory(); // Setup GDT again in case of bootloader is not ours.
 
 	// Clear screen in case BIOS show something
 	for(int i =0;i<2000;i++){

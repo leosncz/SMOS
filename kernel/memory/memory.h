@@ -31,7 +31,7 @@ struct gdtr {
 struct gdtDescriptor gdt[3];	/* GDT - code, data & stack*/
 struct gdtr gdtr;		/* GDTR */
 
-void setupGDT();
+void setupMemory();
 void *memcpy(char *dst, char *src, int n);
 
 #endif

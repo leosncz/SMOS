@@ -14,7 +14,7 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
-void setupGDT(){
+void setupMemory(){
 	gdt[0].limit_0_15 = 0x0;
         gdt[0].base_0_15 = 0x0;
         gdt[0].base_16_23 = 0x0;
@@ -51,14 +51,9 @@ void setupGDT(){
 
 	// Make changes
 	gdtr.limit = 4*8; // Total size of gdt
-	gdtr.base = 0x0;
-	memcpy((char *) gdtr.base, (char *) gdt, gdtr.limit);
-
-	/* chargement du registre GDTR */
+	gdtr.base = &gdt;
         asm("lgdtl (gdtr)");
 
-        /* initialisation des segments */
-         
 	asm("   movw $0x10, %ax \n \
             movw %ax, %ds       \n \
             movw %ax, %es       \n \
