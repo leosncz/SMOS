@@ -7,9 +7,11 @@
 #ifndef memory
 #define memory
 
-/*
-   --- GDT
-*/
+extern void clock_irq();
+extern void keyboard_irq();
+extern void default_irq();
+extern void setup_pic();
+extern void enable_interrupt();
 
 struct gdtDescriptor{
 
@@ -29,7 +31,22 @@ struct gdtr {
 } __attribute__ ((packed));
 
 struct gdtDescriptor gdt[3];	/* GDT - code, data & stack*/
-struct gdtr gdtr;		/* GDTR */
+struct gdtr gdtr;
+
+struct idtDescriptor{
+unsigned short offset_0_15;
+unsigned short segment_selector;
+unsigned short misc;
+unsigned short offset_16_31;
+} __attribute__ ((packed));
+
+struct idtr{
+unsigned short limit;
+unsigned int base;
+} __attribute__ ((packed));
+
+struct idtDescriptor idt[256];
+struct idtr idtr;
 
 void setupMemory();
 void *memcpy(char *dst, char *src, int n);

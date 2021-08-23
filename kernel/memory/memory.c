@@ -64,4 +64,22 @@ void setupMemory(){
 
 	asm("   movw $0x18, %ax \n \
         movw %ax, %ss \n"); 
+
+	for(int i = 0;i<255;i++){
+		idt[i].offset_0_15 = ((int)default_irq) & 0xffff;
+		idt[i].segment_selector = 0x8;
+		idt[i].misc = 0x8E00;
+		idt[i].offset_16_31 = ((int)default_irq & 0xffff0000) >> 16;
+	}
+
+	// Focus on created keyboard event
+	idt[33].offset_0_15 = ((int)keyboard_irq) & 0xffff;
+	idt[33].offset_16_31 = ((int)keyboard_irq & 0xffff0000) >> 16;
+
+	idtr.limit = 256 * 8;
+	idtr.base = &idt;
+	asm("lidtl (idtr)");
+
+	setup_pic();
+	enable_interrupt();
 }
