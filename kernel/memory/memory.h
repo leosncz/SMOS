@@ -12,6 +12,14 @@ extern void keyboard_irq();
 extern void default_irq();
 extern void setup_pic();
 extern void enable_interrupt();
+extern void disable_interrupt();
+
+void setupMemory(); // Setup GDT & IDT
+void *memcpy(char *dst, char *src, int n);
+
+void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit);
+void addGDTDataEntry(char ring, unsigned int base, unsigned int limit);
+void addGDTStackEntry(char ring, unsigned int base, unsigned int limit);
 
 struct gdtDescriptor{
 
@@ -30,8 +38,10 @@ struct gdtr {
     unsigned int base ;
 } __attribute__ ((packed));
 
-struct gdtDescriptor gdt[3];	/* GDT - code, data & stack*/
+struct gdtDescriptor gdt[256];	/* GDT - code, data & stack*/
 struct gdtr gdtr;
+int numberOfGDTDescriptor;
+
 
 struct idtDescriptor{
 unsigned short offset_0_15;
@@ -47,8 +57,5 @@ unsigned int base;
 
 struct idtDescriptor idt[256];
 struct idtr idtr;
-
-void setupMemory();
-void *memcpy(char *dst, char *src, int n);
 
 #endif

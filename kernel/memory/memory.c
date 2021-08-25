@@ -49,8 +49,19 @@ void setupMemory(){
 	gdt[3].misc = 0xD;
 	gdt[3].base_24_31 = 0x0;
 
+	for(int i = 4;i<256;i++)
+	{
+		gdt[i].limit_0_15 = 0x0;
+		gdt[i].base_0_15 = 0x0;
+		gdt[i].base_16_23 = 0x0;
+		gdt[i].access = 0x0;
+		gdt[i].limit_16_19 = 0x0;
+		gdt[i].misc = 0x0;
+		gdt[i].base_24_31 = 0x0;
+	}
+
 	// Make changes
-	gdtr.limit = 4*8; // Total size of gdt
+	gdtr.limit = 256*8; // Total size of gdt
 	gdtr.base = &gdt;
         asm("lgdtl (gdtr)");
 
@@ -82,4 +93,66 @@ void setupMemory(){
 
 	setup_pic();
 	enable_interrupt();
+	numberOfGDTDescriptor = 4;
+}
+
+void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
+{
+	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
+        gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
+        gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
+	
+	if(ring == 3){
+        	gdt[numberOfGDTDescriptor].access = 0xF9; // UserSpace DPL=3 Not readable
+	}
+	else{
+		gdt[numberOfGDTDescriptor].access = 0x9B;
+	}
+        
+	gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
+        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
+
+	numberOfGDTDescriptor++;
+}
+
+void addGDTDataEntry(char ring, unsigned int base, unsigned int limit)
+{
+	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
+        gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
+        gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
+
+        if(ring == 3){
+                gdt[numberOfGDTDescriptor].access = 0xF3; // UserSpace 
+        }
+        else{
+                gdt[numberOfGDTDescriptor].access = 0x93;
+        }
+
+        gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
+        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
+
+        numberOfGDTDescriptor++;
+}
+
+void addGDTStackEntry(char ring, unsigned int base, unsigned int limit)
+{
+	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
+        gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
+        gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
+
+        if(ring == 3){
+                gdt[numberOfGDTDescriptor].access = 0xF7; // UserSpace 
+        }
+        else{
+                gdt[numberOfGDTDescriptor].access = 0x97;
+        }
+
+        gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
+        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
+
+        numberOfGDTDescriptor++;
+
 }

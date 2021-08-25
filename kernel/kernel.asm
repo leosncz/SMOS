@@ -10,13 +10,31 @@ global default_irq
 global keyboard_irq
 global setup_pic
 global enable_interrupt
+global disable_interrupt
+global test
+
 
 start:
 call kmain
 jmp $ ; Security loop in case kmain ends execution - Should NEVER happen /!\
 
+test:
+mov ax, 0x20
+mov ds, ax
+mov byte [0x0], 57
+mov ax, 0x10
+mov ds, ax
+mov byte al,[0x20000]
+mov byte [0xB8000], al
+mov byte [0xB8001], 0x57
+ret
+
 enable_interrupt:
 sti
+ret
+
+disable_interrupt:
+cli
 ret
 
 default_irq:
