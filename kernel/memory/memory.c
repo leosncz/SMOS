@@ -110,7 +110,7 @@ void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
 	}
         
 	gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
-        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].misc = 0x5;
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
 	numberOfGDTDescriptor++;
@@ -130,7 +130,7 @@ void addGDTDataEntry(char ring, unsigned int base, unsigned int limit)
         }
 
         gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
-        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].misc = 0x5;
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
         numberOfGDTDescriptor++;
@@ -150,7 +150,7 @@ void addGDTStackEntry(char ring, unsigned int base, unsigned int limit)
         }
 
         gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
-        gdt[numberOfGDTDescriptor].misc = 0xD;
+        gdt[numberOfGDTDescriptor].misc = 0x5;
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
         numberOfGDTDescriptor++;
