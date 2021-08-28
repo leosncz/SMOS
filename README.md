@@ -22,6 +22,7 @@ All system calls are accessible to ring3 applications :</br>
 
 ### Build
 **Linux distro** (arm, x86, whatever architecture you want) is almost mandatory.</br>
-Just run the auto-build script, you may need to give it execute right.</br>
+Just run the auto-build script, you may need to give it execution right.</br>
+Don't forget to use a cross-compiler targeting raw i686/i386 code.</br>
 Don't touch bootloaders & kernel files, you can edit :</br>
 **Still in development, this rdme will be edited when time has come.**
