@@ -16,7 +16,7 @@ It supports pagination, is preemptive and small GUI system to create window(s) f
 0x7C00 Bootloader code</br>
 0x90000 Kernel stack beginning</br>
 ### System call
-All system all are accessible to ring3 applications :</br>
+All system calls are accessible to ring3 applications :</br>
 **0x30** : Print DEBUG on top-left corner, can be used to debug.
 
 
