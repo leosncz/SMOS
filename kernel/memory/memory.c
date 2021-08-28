@@ -87,6 +87,12 @@ void setupMemory(){
 	idt[33].offset_0_15 = ((int)keyboard_irq) & 0xffff;
 	idt[33].offset_16_31 = ((int)keyboard_irq & 0xffff0000) >> 16;
 
+	// System call accessible for every ring - only trap gates to keep interrupts
+	// Debug sys call 0x30
+	idt[48].offset_0_15 = ((int)printDebug) & 0xffff;
+	idt[48].misc = 0xEF00;
+	idt[48].offset_16_31 = ((int)printDebug & 0xffff0000) >> 16;
+
 	idtr.limit = 256 * 8;
 	idtr.base = &idt;
 	asm("lidtl (idtr)");

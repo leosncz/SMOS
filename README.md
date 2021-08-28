@@ -10,10 +10,15 @@ It supports pagination, is preemptive and small GUI system to create window(s) f
 ![image](actualState.png)
 
 ## How to modify & build this project
-Memory organization: (can change over time)</br>
+### Memory organization
+(Can change over time)</br></br>
 0x1000: Kernel code</br>
 0x7C00 Bootloader code</br>
 0x90000 Kernel stack beginning</br>
+### System call
+All system all are accessible to ring3 applications :</br>
+**0x30** : Print DEBUG on top-left corner, can be used to debug.
+
 
 ### Build
 **Linux distro** (arm, x86, whatever architecture you want) is almost mandatory.</br>

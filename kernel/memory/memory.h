@@ -6,6 +6,7 @@
 
 #ifndef memory
 #define memory
+#include "../basic_graphics/basic_graphics.h"
 
 extern void clock_irq();
 extern void keyboard_irq();
