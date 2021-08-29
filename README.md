@@ -2,7 +2,9 @@
 Small &amp; Modular x86 Operating System
 ## What is SMOS
 It's an **unix-like** operating system, designed to be easily customizable by anyone to create its own OS.</br>
-It supports pagination, is preemptive and small GUI system to create window(s) for your appplication(s).</br>
+It supports pagination, is preemptive and small GUI system to create window(s) for your appplication(s).</br><*br>
+For now it is not usable and still in early development.
+
 ## What is working today ?
 - Full protected mode GDT support, ring & dynamic gdt entries are working.
 - Full interrupts (example clock & keyboard) support.

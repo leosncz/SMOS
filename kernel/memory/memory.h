@@ -16,6 +16,7 @@ extern void enable_interrupt();
 extern void disable_interrupt();
 
 void setupMemory(); // Setup GDT & IDT
+void switchRing3();
 void *memcpy(char *dst, char *src, int n);
 
 void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit);
@@ -59,4 +60,40 @@ unsigned int base;
 struct idtDescriptor idt[256];
 struct idtr idtr;
 
+struct task
+{
+unsigned short previous_task, previous_task_ununsed;
+unsigned int esp0;
+unsigned short ss0, ss0_unused;
+unsigned int esp1;
+unsigned short ss1, ss1_unused;
+unsigned int esp2;
+unsigned short ss2, ss2_unused;
+unsigned int cr3;
+unsigned int eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;
+unsigned short es, es_unused;
+unsigned short cs, cs_unused;
+unsigned short ss, ss_unused;
+unsigned short ds, ds_unused;
+unsigned short fs, fs_unused;
+unsigned short gs, gs_unused;
+unsigned short ldt_selector, ldt_sel_unused;
+unsigned short debug_flag, io_map;
+} __attribute__ ((packed));
+
+struct task kernelTask; // Default kernel task
+
+struct process
+{
+char* name;
+int active; // 0 = inactive 1 = active
+int created; // 0 = not created 1 = created
+unsigned int eax, ebx, ecx, edx;
+unsigned int esp;
+unsigned short cs,ds,ss;
+unsigned short ss0;
+unsigned int esp0;
+};
+
+struct process processes[100]; // All processes - Max 100 !
 #endif

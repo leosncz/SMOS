@@ -49,7 +49,20 @@ void setupMemory(){
 	gdt[3].misc = 0xD;
 	gdt[3].base_24_31 = 0x0;
 
-	for(int i = 4;i<256;i++)
+	//Kernel TSS
+	kernelTask.debug_flag = 0x0;
+	kernelTask.io_map = 0x0;
+	kernelTask.esp0 = 0x90000;
+	kernelTask.ss0 = 0x18;
+	gdt[4].limit_0_15 = ((unsigned int)0x70 & 0xffff);
+	gdt[4].base_0_15 = ((unsigned int)&kernelTask) & 0xffff;
+	gdt[4].base_16_23 = (((unsigned int)&kernelTask) & 0xff0000) >> 16;
+	gdt[4].access = 0xE9;
+	gdt[4].limit_16_19 = ((unsigned int)0x70 & 0xf0000) >> 16;
+	gdt[4].misc = 0x0;
+	gdt[4].base_24_31 = ((unsigned int)&kernelTask & 0xff000000) >> 24;
+
+	for(int i = 5;i<256;i++)
 	{
 		gdt[i].limit_0_15 = 0x0;
 		gdt[i].base_0_15 = 0x0;
@@ -74,8 +87,10 @@ void setupMemory(){
             next:               \n");
 
 	asm("   movw $0x18, %ax \n \
-        movw %ax, %ss \n"); 
+        	movw %ax, %ss \n"); 
 
+
+	// IDT table
 	for(int i = 0;i<255;i++){
 		idt[i].offset_0_15 = ((int)default_irq) & 0xffff;
 		idt[i].segment_selector = 0x8;
@@ -95,11 +110,17 @@ void setupMemory(){
 
 	idtr.limit = 256 * 8;
 	idtr.base = &idt;
-	asm("lidtl (idtr)");
+        asm("lidtl (idtr)");
 
 	setup_pic();
 	enable_interrupt();
-	numberOfGDTDescriptor = 4;
+	numberOfGDTDescriptor = 5;
+
+	asm("movw $0x21, %ax \n \
+       		ltr %ax");
+	asm("  movw %%ss, %0 \n \
+       movl %%esp, %1" : "=m" (kernelTask.ss0), "=m" (kernelTask.esp0) : );
+
 }
 
 void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
