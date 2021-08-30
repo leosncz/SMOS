@@ -11,27 +11,9 @@ global keyboard_irq
 global setup_pic
 global enable_interrupt
 global disable_interrupt
-global test2
-global test
 
 _start:
 jmp start
-
-test:
-int 0x30
-jmp $
-
-test2:
-cli
-mov   ax, 0x33 ; Ring 3 DS
-mov   ds, eax
-push  dword 0x3B ; Ring 3 SS
-push  dword 0x0
-pushfd
-or dword [esp], 0x200
-push  dword 0x2B
-push  dword 0x0
-iret
 
 enable_interrupt:
 sti

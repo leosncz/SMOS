@@ -14,6 +14,35 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
+int createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress){
+	int offset = 0;
+	for(int i = 0;i<100;i++){
+		if(processes[i].created == 1){offset = i;}
+	}
+	if(offset != 0){
+		offset = offset + 1;
+	}
+	processes[offset].name = name;
+	processes[offset].eax = 0x0;
+        processes[offset].ebx = 0x0;
+        processes[offset].ecx = 0x0;
+        processes[offset].edx = 0x0;
+	processes[offset].esp = 0x0;
+	processes[offset].cs = addGDTCodeEntry(0, destination, size);
+	//processes[offset].ds = addGDTDataEntry(0,destination,size);
+	//processes[offset].ss = addGDTStackEntry(0, stackAddress, stackAddress);
+	//processes[offset].ss0 = addGDTStackEntry(0, kernelStackAddress, kernelStackAddress);
+	//processes[offset].esp0 = 0x0;
+	processes[offset].eip = 0x0;
+
+	if(memcpyStart != destination){
+		memcpy(destination, memcpyStart, size);
+	}
+
+	processes[offset].created = 1;
+	return offset;
+}
+
 void setupMemory(){
 	gdt[0].limit_0_15 = 0x0;
         gdt[0].base_0_15 = 0x0;
@@ -121,19 +150,29 @@ void setupMemory(){
 	asm("  movw %%ss, %0 \n \
        movl %%esp, %1" : "=m" (kernelTask.ss0), "=m" (kernelTask.esp0) : );
 
+	// Processes
+	for(int i = 0;i<100;i++){
+		processes[i].name = "Undefined SMOS app";
+		processes[i].active = 0;
+		processes[i].created = 0;
+	}
 }
 
-void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
+unsigned short addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
 {
+	unsigned short gdtOffset = 0;
+
 	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
         gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
         gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
 	
 	if(ring == 3){
         	gdt[numberOfGDTDescriptor].access = 0xF9; // UserSpace DPL=3 Not readable
+		gdtOffset = numberOfGDTDescriptor * 8 + 3;
 	}
 	else{
 		gdt[numberOfGDTDescriptor].access = 0x9B;
+		gdtOffset = numberOfGDTDescriptor * 8;
 	}
         
 	gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
@@ -141,39 +180,49 @@ void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
 	numberOfGDTDescriptor++;
+	return gdtOffset;
 }
 
-void addGDTDataEntry(char ring, unsigned int base, unsigned int limit)
+unsigned short addGDTDataEntry(char ring, unsigned int base, unsigned int limit)
 {
+	unsigned short gdtOffset = 0;
+
 	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
         gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
         gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
 
         if(ring == 3){
                 gdt[numberOfGDTDescriptor].access = 0xF3; // UserSpace 
+		gdtOffset = numberOfGDTDescriptor * 8 + 3;
         }
         else{
                 gdt[numberOfGDTDescriptor].access = 0x93;
-        }
+        	gdtOffset = numberOfGDTDescriptor * 8;
+	}
 
         gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
         gdt[numberOfGDTDescriptor].misc = 0x5;
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
         numberOfGDTDescriptor++;
+	return gdtOffset;
 }
 
-void addGDTStackEntry(char ring, unsigned int base, unsigned int limit)
+unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit)
 {
+	unsigned short gdtOffset = 0;
+	
 	gdt[numberOfGDTDescriptor].limit_0_15 = limit & 0xffff;
         gdt[numberOfGDTDescriptor].base_0_15 = base & 0xffff;
         gdt[numberOfGDTDescriptor].base_16_23 = (base & 0xff0000) >> 16;
 
         if(ring == 3){
-                gdt[numberOfGDTDescriptor].access = 0xF7; // UserSpace 
+                gdt[numberOfGDTDescriptor].access = 0xF7; // UserSpace
+		gdtOffset =  (numberOfGDTDescriptor * 8) + 3; 
         }
         else{
                 gdt[numberOfGDTDescriptor].access = 0x97;
+		gdtOffset = numberOfGDTDescriptor * 8;
         }
 
         gdt[numberOfGDTDescriptor].limit_16_19 = (limit & 0xf0000) >> 16;
@@ -181,5 +230,5 @@ void addGDTStackEntry(char ring, unsigned int base, unsigned int limit)
         gdt[numberOfGDTDescriptor].base_24_31 = (base & 0xff000000) >> 24;
 
         numberOfGDTDescriptor++;
-
+	return  gdtOffset;
 }

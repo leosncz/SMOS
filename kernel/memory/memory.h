@@ -16,12 +16,14 @@ extern void enable_interrupt();
 extern void disable_interrupt();
 
 void setupMemory(); // Setup GDT & IDT
-void switchRing3();
+ 
 void *memcpy(char *dst, char *src, int n);
 
-void addGDTCodeEntry(char ring, unsigned int base, unsigned int limit);
-void addGDTDataEntry(char ring, unsigned int base, unsigned int limit);
-void addGDTStackEntry(char ring, unsigned int base, unsigned int limit);
+int createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress);
+
+unsigned short addGDTCodeEntry(char ring, unsigned int base, unsigned int limit);
+unsigned short addGDTDataEntry(char ring, unsigned int base, unsigned int limit);
+unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit);
 
 struct gdtDescriptor{
 
@@ -88,6 +90,7 @@ struct process
 char* name;
 int active; // 0 = inactive 1 = active
 int created; // 0 = not created 1 = created
+unsigned int eip;
 unsigned int eax, ebx, ecx, edx;
 unsigned int esp;
 unsigned short cs,ds,ss;

@@ -56,6 +56,4 @@ void printDebug(){
         *characterAddress = 'G';
         characterAddress += 1;
         *characterAddress = 0x52;
-
-	while(1); // Loop forever - debug purposes should never be executed on real hardware
 }

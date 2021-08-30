@@ -3,8 +3,7 @@
 #include "kernel.h"
 #include "basic_graphics/basic_graphics.h"
 #include "memory/memory.h"
-extern void test();
-extern void test2();
+
 void start()
 {
 	setupMemory(); // Setup GDT,IDT & System calls
@@ -15,17 +14,12 @@ void start()
 	clearScreenWhite();
 	kmain();
 
-	printString("> SMOS Kernel has ended execution", 80,34, BLACK_ON_WHITE);
+	printString("> SMOS Kernel is running", 0,25, BLACK_ON_WHITE);
 	while(1); // Secuity loop - Should NEVER be executed
 }
 
 void kmain()
 {
-	addGDTCodeEntry(3, 0x100, 500);
-	addGDTDataEntry(3,0x0,0xFFFF);
-	addGDTStackEntry(3,0x500,500);
-	memcpy(0x100, &test, 500);
-
-	test2();
-
+	// createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress)
+	//int process = createProcessFromRAM("test app", &test, 500,0x100,0x500,0x900);
 }
