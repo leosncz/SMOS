@@ -25,6 +25,8 @@ unsigned short addGDTCodeEntry(char ring, unsigned int base, unsigned int limit)
 unsigned short addGDTDataEntry(char ring, unsigned int base, unsigned int limit);
 unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit);
 
+void switchToProcess(int process);
+
 struct gdtDescriptor{
 
 unsigned short limit_0_15;
@@ -88,6 +90,7 @@ struct task kernelTask; // Default kernel task
 struct process
 {
 char* name;
+int ring;
 int active; // 0 = inactive 1 = active
 int created; // 0 = not created 1 = created
 unsigned int eip;

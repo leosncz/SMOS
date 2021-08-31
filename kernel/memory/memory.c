@@ -14,6 +14,13 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
+void switchToProcess(int process)
+{
+	if(processes[process].ring == 0){
+		asm("	lcall $0x0, $0x0" :: "m" ((unsigned int)0x28));
+	}
+}
+
 int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize){
 	int offset = 0;
 	for(int i = 0;i<100;i++){
@@ -22,17 +29,18 @@ int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigne
 	if(offset != 0){
 		offset = offset + 1;
 	}
+	processes[offset].ring = ring;
 	processes[offset].name = name;
 	processes[offset].eax = 0x0;
         processes[offset].ebx = 0x0;
         processes[offset].ecx = 0x0;
         processes[offset].edx = 0x0;
-	processes[offset].esp = 0x0;
+	processes[offset].esp = stackSize;
 	processes[offset].cs = addGDTCodeEntry(ring, destination, size);
 	processes[offset].ds = addGDTDataEntry(ring,destination,size);
 	processes[offset].ss = addGDTStackEntry(ring, stackAddress, stackAddress-stackSize);
 	processes[offset].ss0 = addGDTStackEntry(ring, kernelStackAddress, kernelStackAddress-stackSize);
-	processes[offset].esp0 = 0x0;
+	processes[offset].esp0 = stackSize;
 	processes[offset].eip = 0x0;
 
 	if(memcpyStart != destination){
