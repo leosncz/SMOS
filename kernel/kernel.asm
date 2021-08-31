@@ -11,7 +11,7 @@ global keyboard_irq
 global setup_pic
 global enable_interrupt
 global disable_interrupt
-global _retf
+global test
 
 _start:
 jmp start
@@ -24,9 +24,11 @@ disable_interrupt:
 cli
 ret
 
-_retf:
-mov byte [0xB8000], 'T'
-retf
+test:
+;mov esp, 0x1000
+add esp, 0x1000
+;add esp, 0x2000
+ret
 
 default_irq:
 mov al, 0x20
