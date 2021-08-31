@@ -14,7 +14,7 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
-int createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress){
+int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize){
 	int offset = 0;
 	for(int i = 0;i<100;i++){
 		if(processes[i].created == 1){offset = i;}
@@ -28,15 +28,15 @@ int createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size
         processes[offset].ecx = 0x0;
         processes[offset].edx = 0x0;
 	processes[offset].esp = 0x0;
-	processes[offset].cs = addGDTCodeEntry(0, destination, size);
-	//processes[offset].ds = addGDTDataEntry(0,destination,size);
-	//processes[offset].ss = addGDTStackEntry(0, stackAddress, stackAddress);
-	//processes[offset].ss0 = addGDTStackEntry(0, kernelStackAddress, kernelStackAddress);
-	//processes[offset].esp0 = 0x0;
+	processes[offset].cs = addGDTCodeEntry(ring, destination, size);
+	processes[offset].ds = addGDTDataEntry(ring,destination,size);
+	processes[offset].ss = addGDTStackEntry(ring, stackAddress, stackAddress-stackSize);
+	processes[offset].ss0 = addGDTStackEntry(ring, kernelStackAddress, kernelStackAddress-stackSize);
+	processes[offset].esp0 = 0x0;
 	processes[offset].eip = 0x0;
 
 	if(memcpyStart != destination){
-		memcpy(destination, memcpyStart, size);
+		memcpy((unsigned char*)destination, (unsigned char*)memcpyStart, size);
 	}
 
 	processes[offset].created = 1;
@@ -126,6 +126,10 @@ void setupMemory(){
 		idt[i].misc = 0x8E00;
 		idt[i].offset_16_31 = ((int)default_irq & 0xffff0000) >> 16;
 	}
+
+	// Focus on created clock event
+	idt[32].offset_0_15 = ((int)clock_irq) & 0xffff;
+	idt[32].offset_16_31 = ((int)clock_irq & 0xffff0000) >> 16;
 
 	// Focus on created keyboard event
 	idt[33].offset_0_15 = ((int)keyboard_irq) & 0xffff;

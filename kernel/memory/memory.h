@@ -19,7 +19,7 @@ void setupMemory(); // Setup GDT & IDT
  
 void *memcpy(char *dst, char *src, int n);
 
-int createProcessFromRAM(char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress);
+int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize);
 
 unsigned short addGDTCodeEntry(char ring, unsigned int base, unsigned int limit);
 unsigned short addGDTDataEntry(char ring, unsigned int base, unsigned int limit);
