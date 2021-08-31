@@ -5,7 +5,6 @@
 */
 
 #include "memory.h"
-extern void test();
 
 void *memcpy(char *dst, char *src, int n)
 {
@@ -18,8 +17,11 @@ void *memcpy(char *dst, char *src, int n)
 void switchToProcess(int process)
 {
 	if(processes[process].ring == 0){
-		int cs = processes[process].cs;
-		asm("ljmp %0, $0x0" :: "n" ((int (*)(void))cs));
+		//const int cs = 0x28;
+		//set_cs(cs);
+		//char testt[] = "ljmp $0x28, $0x0";
+		//asm(testt);
+		//asm("ljmp %0, $fake_label \n\t fake_label: \n\t" :: "i"(cs) );
 	}
 }
 

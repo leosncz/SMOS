@@ -11,7 +11,6 @@ global keyboard_irq
 global setup_pic
 global enable_interrupt
 global disable_interrupt
-global test
 
 _start:
 jmp start
@@ -22,12 +21,6 @@ ret
 
 disable_interrupt:
 cli
-ret
-
-test:
-;mov esp, 0x1000
-add esp, 0x1000
-;add esp, 0x2000
 ret
 
 default_irq:
