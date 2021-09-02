@@ -14,6 +14,7 @@ extern void default_irq();
 extern void setup_pic();
 extern void enable_interrupt();
 extern void disable_interrupt();
+extern void _iret();
 
 void setupMemory(); // Setup GDT & IDT
  
@@ -27,7 +28,7 @@ unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit
 
 void switchToProcess(int process);
 int getActualProcess();
-void clockHandler();
+void  clockHandler();
 void startProcesses();
 
 struct gdtDescriptor{

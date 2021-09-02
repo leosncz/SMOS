@@ -17,7 +17,8 @@ void *memcpy(char *dst, char *src, int n)
 void clockHandler()
 {
 	if(last == 0){last = 1; char* test = 0xB8090; *test = '/';}
-	else if(last == 1){last = 0; char* test = 0xB8090; *test = '\\';}
+	else if(last == 1){last = 0; char* test = 0xB8090; *test = '\\';} 
+	asm("mov $0x20, %al; \n\t outb %al, $0x20;");
 }
 
 void startProcesses(){

@@ -12,9 +12,13 @@ global keyboard_irq
 global setup_pic
 global enable_interrupt
 global disable_interrupt
+global _iret
 
 _start:
 jmp start
+
+_iret:
+iret
 
 enable_interrupt:
 sti
@@ -30,8 +34,6 @@ out 0x20, al
 iret
 
 clock_irq:
-mov al, 0x20
-out 0x20, al
 call clockHandler
 iret ; Will never be executed
 
