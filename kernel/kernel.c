@@ -21,6 +21,7 @@ void start()
 void kmain()
 {
 	// int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize);
-	int process = createProcessFromRAM(0, "test app", (unsigned int)&printDebug, 500,0x100,0x500,0x900, 100);
-	switchToProcess(process);
+	int process = createProcessFromRAM(0, "test app", (unsigned int)&printDebugTopRight, 500,0x100,0x500,0x900, 100);
+	int process2 = createProcessFromRAM(0, "test app2", (unsigned int)&printDebugTopLeft, 500, 0x600, 0x2000, 0x3000,100); 
+	startProcesses();
 }

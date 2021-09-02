@@ -26,6 +26,9 @@ unsigned short addGDTDataEntry(char ring, unsigned int base, unsigned int limit)
 unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit);
 
 void switchToProcess(int process);
+int getActualProcess();
+void clockHandler();
+void startProcesses();
 
 struct gdtDescriptor{
 

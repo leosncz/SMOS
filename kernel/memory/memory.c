@@ -5,7 +5,7 @@
 */
 
 #include "memory.h"
-
+int last = 0;
 void *memcpy(char *dst, char *src, int n)
 {
 	char *p = dst;
@@ -14,13 +14,55 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
+void clockHandler()
+{
+	if(last == 0){last = 1; char* test = 0xB8090; *test = '/';}
+	else if(last == 1){last = 0; char* test = 0xB8090; *test = '\\';}
+}
+
+void startProcesses(){
+	switchToProcess(0);
+}
+
 void switchToProcess(int process)
 {
-	if(processes[process].ring == 0){
-		unsigned int cs = processes[process].cs;
-		unsigned int offset = processes[process].eip;
-		asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
+	int actualProcess = getActualProcess();
+	if (actualProcess > -1){ // We already executed at least one process
+		processes[actualProcess].active = 0;
+		// TODO : Save this process (acrualProcess) context
+		processes[process].active = 1;
+		if(processes[process].ring == processes[actualProcess].ring){
+			unsigned int cs = processes[process].cs;
+			unsigned int offset = processes[process].eip;
+			asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
+		}
+		else
+		{
+			// TODO : Switch ring & jmp to process
+		}
 	}
+	else{ // Still havnt executed any process
+		processes[process].active = 1;
+		if(processes[process].ring == 0)
+		{
+			unsigned int cs = processes[process].cs;
+			unsigned int offset = processes[process].eip;
+			asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
+		}
+		else
+		{
+			// TODO : Switch ring & jmp to process
+		}
+	}
+}
+
+int getActualProcess()
+{
+	for(int i = 0;i<100;i++)
+	{
+		if(processes[i].active == 1){return i;}
+	}
+	return -1; // There is no active process, means we still do not have executed any process
 }
 
 int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize){
@@ -147,9 +189,9 @@ void setupMemory(){
 
 	// System call accessible for every ring - only trap gates to keep interrupts
 	// Debug sys call 0x30
-	idt[48].offset_0_15 = ((int)printDebug) & 0xffff;
+	idt[48].offset_0_15 = ((int)printDebugTopLeft) & 0xffff;
 	idt[48].misc = 0xEF00;
-	idt[48].offset_16_31 = ((int)printDebug & 0xffff0000) >> 16;
+	idt[48].offset_16_31 = ((int)printDebugTopLeft & 0xffff0000) >> 16;
 
 	idtr.limit = 256 * 8;
 	idtr.base = &idt;

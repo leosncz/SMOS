@@ -31,7 +31,36 @@ void printString(char* string, int offset, int size, int colorCode)
 	}
 }
 
-void printDebug(){
+void printDebugTopRight()
+{
+	char* characterAddress = (char*)0xB8012;
+        *characterAddress = 'D';
+        characterAddress += 1;
+        *characterAddress = 0x52;
+
+	characterAddress += 1;
+	*characterAddress = 'E';
+	characterAddress += 1;
+	*characterAddress = 0x52;
+
+	characterAddress += 1;
+	*characterAddress = 'B';
+	characterAddress += 1;
+        *characterAddress = 0x52;
+
+	characterAddress += 1;
+        *characterAddress = 'U';
+        characterAddress += 1;
+        *characterAddress = 0x52;
+
+	characterAddress += 1;
+        *characterAddress = 'G';
+        characterAddress += 1;
+        *characterAddress = 0x52;
+	while(1);
+}
+
+void printDebugTopLeft(){
 	char* characterAddress = (char*)0xB8000;
         *characterAddress = 'D';
         characterAddress += 1;
@@ -56,5 +85,5 @@ void printDebug(){
         *characterAddress = 'G';
         characterAddress += 1;
         *characterAddress = 0x52;
-	//while(1);
+	while(1);
 }

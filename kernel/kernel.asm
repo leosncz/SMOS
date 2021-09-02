@@ -4,6 +4,7 @@
 
 [bits 32]
 extern start
+extern clockHandler
 global _start
 global clock_irq
 global default_irq
@@ -31,7 +32,8 @@ iret
 clock_irq:
 mov al, 0x20
 out 0x20, al
-iret
+call clockHandler
+iret ; Will never be executed
 
 keyboard_irq:
 mov al, 0x20
