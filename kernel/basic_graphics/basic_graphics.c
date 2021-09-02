@@ -56,4 +56,5 @@ void printDebug(){
         *characterAddress = 'G';
         characterAddress += 1;
         *characterAddress = 0x52;
+	//while(1);
 }

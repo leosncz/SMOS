@@ -17,13 +17,9 @@ void *memcpy(char *dst, char *src, int n)
 void switchToProcess(int process)
 {
 	if(processes[process].ring == 0){
-		unsigned int cs = 0x28;
-		__asm__ __volatile__("ljmp *(%0), $0x0\n" : : "r"((void*)&cs-4) : "memory");
-		//const int cs = 0x28;
-		//set_cs(cs);
-		//char testt[] = "ljmp $0x28, $0x0";
-		//asm(testt);
-		//asm("ljmp %0, $fake_label \n\t fake_label: \n\t" :: "i"(cs) );
+		unsigned int cs = processes[process].cs;
+		unsigned int offset = processes[process].eip;
+		asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
 	}
 }
 
