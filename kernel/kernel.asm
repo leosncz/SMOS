@@ -4,21 +4,13 @@
 
 [bits 32]
 extern start
-extern clockHandler
 global _start
-global clock_irq
-global default_irq
-global keyboard_irq
 global setup_pic
 global enable_interrupt
 global disable_interrupt
-global _iret
 
 _start:
 jmp start
-
-_iret:
-iret
 
 enable_interrupt:
 sti
@@ -27,20 +19,6 @@ ret
 disable_interrupt:
 cli
 ret
-
-default_irq:
-mov al, 0x20
-out 0x20, al
-iret
-
-clock_irq:
-call clockHandler
-iret ; Will never be executed
-
-keyboard_irq:
-mov al, 0x20
-out 0x20, al
-iret
 
 setup_pic:
 mov al, 0x11

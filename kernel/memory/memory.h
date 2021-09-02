@@ -7,14 +7,7 @@
 #ifndef memory
 #define memory
 #include "../basic_graphics/basic_graphics.h"
-
-extern void clock_irq();
-extern void keyboard_irq();
-extern void default_irq();
-extern void setup_pic();
-extern void enable_interrupt();
-extern void disable_interrupt();
-extern void _iret();
+#include "interrupts/interrupts.h"
 
 void setupMemory(); // Setup GDT & IDT
  
@@ -28,7 +21,6 @@ unsigned short addGDTStackEntry(char ring, unsigned int base, unsigned int limit
 
 void switchToProcess(int process);
 int getActualProcess();
-void  clockHandler();
 void startProcesses();
 
 struct gdtDescriptor{

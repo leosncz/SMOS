@@ -5,20 +5,13 @@
 */
 
 #include "memory.h"
-int last = 0;
+
 void *memcpy(char *dst, char *src, int n)
 {
 	char *p = dst;
 	while (n--)
 		*dst++ = *src++;
 	return p;
-}
-
-void clockHandler()
-{
-	if(last == 0){last = 1; char* test = 0xB8090; *test = '/';}
-	else if(last == 1){last = 0; char* test = 0xB8090; *test = '\\';} 
-	asm("mov $0x20, %al; \n\t outb %al, $0x20;");
 }
 
 void startProcesses(){
@@ -174,19 +167,19 @@ void setupMemory(){
 
 	// IDT table
 	for(int i = 0;i<255;i++){
-		idt[i].offset_0_15 = ((int)default_irq) & 0xffff;
+		idt[i].offset_0_15 = ((int)defaultIRQHandler) & 0xffff;
 		idt[i].segment_selector = 0x8;
 		idt[i].misc = 0x8E00;
-		idt[i].offset_16_31 = ((int)default_irq & 0xffff0000) >> 16;
+		idt[i].offset_16_31 = ((int)defaultIRQHandler & 0xffff0000) >> 16;
 	}
 
 	// Focus on created clock event
-	idt[32].offset_0_15 = ((int)clock_irq) & 0xffff;
-	idt[32].offset_16_31 = ((int)clock_irq & 0xffff0000) >> 16;
+	idt[32].offset_0_15 = ((int)clockIRQHandler) & 0xffff;
+	idt[32].offset_16_31 = ((int)clockIRQHandler & 0xffff0000) >> 16;
 
 	// Focus on created keyboard event
-	idt[33].offset_0_15 = ((int)keyboard_irq) & 0xffff;
-	idt[33].offset_16_31 = ((int)keyboard_irq & 0xffff0000) >> 16;
+	idt[33].offset_0_15 = ((int)keyboardIRQHandler) & 0xffff;
+	idt[33].offset_16_31 = ((int)keyboardIRQHandler & 0xffff0000) >> 16;
 
 	// System call accessible for every ring - only trap gates to keep interrupts
 	// Debug sys call 0x30
