@@ -24,6 +24,5 @@ void kmain()
 	int process = createProcessFromRAM(0, "test app", (unsigned int)&printDebugTopRight, 300,0x100,0x500,0x900, 100);
 	int process2 = createProcessFromRAM(0, "test app2", (unsigned int)&printDebugTopLeft, 300, 0x50000, 0x60000, 0x65000,100); 
 
-	switchToProcessSameRing0(process);
 	// Clock interrupt will take its reponsability from now on
 }

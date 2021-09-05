@@ -8,7 +8,7 @@ For now it is not usable and still in early development.
 ## What is working today ?
 - Full protected mode GDT support, ring & dynamic gdt entries are working.
 - Full interrupts (example clock & keyboard) support.
-
+- Multitasking ! (Only for ring0 -> ring0, working on all ring multitasking)
 ![image](actualState.png)
 
 ## How to modify & build this project

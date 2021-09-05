@@ -15,9 +15,7 @@ void *memcpy(char *dst, char *src, int n);
 
 int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize);
 
-void switchToProcessSameRing0(int process);
 int getActualProcess();
-void startProcesses();
 
 struct process
 {

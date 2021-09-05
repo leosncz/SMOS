@@ -34,7 +34,7 @@ void printString(char* string, int offset, int size, int colorCode)
 void printDebugTopRight()
 {
 	int last = 0;
-	char* characterAddress = (char*)0xB8012;
+	char* characterAddress = (char*)0xB8012 + 80*2;
         *characterAddress = 'D';
         characterAddress += 1;
         *characterAddress = 0x52;
@@ -58,11 +58,12 @@ void printDebugTopRight()
         *characterAddress = 'G';
         characterAddress += 1;
         *characterAddress = 0x52;
-	while(1){if(last == 0){last=1; char*test = (char*)0xB8012; *test = 'D';}else{last=0; char* test2 = (char*)0xB8012; *test2 = 'd';}}
+	while(1){if(last == 0){last=1; char*test = (char*)0xB8012+80*2; *test = 'D';}else{last=0; char* test2 = (char*)0xB8012+80*2; *test2 = 'd';}}
 }
 
 void printDebugTopLeft(){
-	char* characterAddress = (char*)0xB8000;
+	int last = 0;
+	char* characterAddress = (char*)0xB8000 + 80*2;
         *characterAddress = 'D';
         characterAddress += 1;
         *characterAddress = 0x52;
@@ -86,5 +87,5 @@ void printDebugTopLeft(){
         *characterAddress = 'G';
         characterAddress += 1;
         *characterAddress = 0x52;
-	while(1);
+	while(1){if(last == 0){last=1; char*test = (char*)0xB8000+80*2; *test = 'D';}else{last=0; char* test2 = (char*)0xB8000+80*2; *test2 = 'd';}}
 }

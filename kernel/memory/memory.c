@@ -14,25 +14,13 @@ void *memcpy(char *dst, char *src, int n)
 	return p;
 }
 
-void startProcesses(){
-	// TODO
-	return;
-}
-
-void switchToProcessSameRing0(int process)
-{
-	processes[getActualProcess()].active = 0;
-	processes[process].active = 1;
-	asm("push %0; push %1; retf;" :: "m"(processes[process].cs), "m"(processes[process].eip));
-}
-
 int getActualProcess()
 {
 	for(int i = 0;i<100;i++)
 	{
 		if(processes[i].active == 1){return i;}
 	}
-	return -1; // There is no active process, means we still do not have executed any process
+	return 0; // There is no active process, means we still do not have executed any process
 }
 
 int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize){

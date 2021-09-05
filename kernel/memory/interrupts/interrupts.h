@@ -10,13 +10,9 @@
 extern void setup_pic();
 extern void enable_interrupt();
 extern void disable_interrupt();
+extern void clockIRQHandlerASM();
 
-struct interrupt_frame
-{
-unsigned int P0;
-unsigned int P1;
-unsigned int P2;
-};
+struct interrupt_frame* frame;
 
 struct idtDescriptor{
 unsigned short offset_0_15;
@@ -35,7 +31,7 @@ struct idtr idtr;
 
 void setupIDT();
 
-__attribute__((interrupt)) void clockIRQHandler(struct interrupt_frame* frame);
+void clockIRQHandler();
 __attribute__((interrupt)) void defaultIRQHandler(struct interrupt_frame* frame);
 __attribute__((interrupt)) void keyboardIRQHandler(struct interrupt_frame* frame);
 

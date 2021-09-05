@@ -7,18 +7,34 @@
 #include "interrupts.h"
 #include "../memory.h"
 int last_ = 0;
-__attribute__((interrupt)) void clockIRQHandler(struct interrupt_frame* frame)
+void clockIRQHandler()
 {
-	//if(last_ == 0){last_ = 1; char* test = 0xB809E; *test = '/';}
-	//else if(last_ == 1){last_ = 0; char* test = 0xB809E; *test = '\\';} 
-	//asm("mov $0x20, %al; \n\t outb %al, $0x20;");
-
+	if(last_ == 0){last_ = 1; char* test = 0xB809E; *test = '/';}
+	else if(last_ == 1){last_ = 0; char* test = 0xB809E; *test = '\\';}
+	
+	// Actual process EIP is at 0x0 - We save it
 	int actualProcess = getActualProcess();
-	// Save EIP
-	unsigned int EIPActualProcess = 0x0; // TODO : Update tis value
-	processes[actualProcess].eip = EIPActualProcess;
-	if(processes[actualProcess + 1].created == 1){switchToProcessSameRing0(actualProcess+1);}
-	else{switchToProcessSameRing0(0);}
+	processes[actualProcess].active = 0;
+	unsigned int* eip = (unsigned int*)0x0;
+	processes[actualProcess].eip = *eip;
+
+	int nextProcess = 0;
+	if(processes[actualProcess+1].created == 1){nextProcess = actualProcess + 1;}
+
+	// Save next process CS at 0x0 and EIP at 0x4 and EFLAGS at 0x8
+	unsigned int nextCS = processes[nextProcess].cs;
+	unsigned int nextEIP = processes[nextProcess].eip;
+	unsigned int nextEflags = 0;
+	asm("pushfl; popl %%eax; orl $0x200, %%eax; and $0xffffbfff, %%eax; mov %%eax, %0": "=m"(nextEflags) :: "eax");
+
+	unsigned int* memoryWriter = (unsigned int*)0x0;
+	*memoryWriter = nextCS;
+	memoryWriter = (unsigned int*)0x4;
+	*memoryWriter = nextEIP;
+	memoryWriter = (unsigned int*)0x8;
+	*memoryWriter = nextEflags;
+
+	processes[nextProcess].active = 1;
 }
 __attribute__((interrupt)) void defaultIRQHandler(struct interrupt_frame* frame)
 {
@@ -40,8 +56,8 @@ void setupIDT()
         }
 
         // Focus on created clock event
-        idt[32].offset_0_15 = ((int)clockIRQHandler) & 0xffff;
-        idt[32].offset_16_31 = ((int)clockIRQHandler & 0xffff0000) >> 16;
+        idt[32].offset_0_15 = ((int)clockIRQHandlerASM) & 0xffff;
+        idt[32].offset_16_31 = ((int)clockIRQHandlerASM & 0xffff0000) >> 16;
 
         // Focus on created keyboard event
         idt[33].offset_0_15 = ((int)keyboardIRQHandler) & 0xffff;
