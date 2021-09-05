@@ -80,7 +80,6 @@ void setupGDT(){
 
 	asm("   movw $0x18, %ax \n \
         	movw %ax, %ss \n"); 
-;
 	numberOfGDTDescriptor = 5;
 
 }

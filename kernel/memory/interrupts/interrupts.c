@@ -5,12 +5,20 @@
 */
 
 #include "interrupts.h"
+#include "../memory.h"
 int last_ = 0;
 __attribute__((interrupt)) void clockIRQHandler(struct interrupt_frame* frame)
 {
-	if(last_ == 0){last_ = 1; char* test = 0xB809E; *test = '/';}
-	else if(last_ == 1){last_ = 0; char* test = 0xB809E; *test = '\\';} 
-	asm("mov $0x20, %al; \n\t outb %al, $0x20;");
+	//if(last_ == 0){last_ = 1; char* test = 0xB809E; *test = '/';}
+	//else if(last_ == 1){last_ = 0; char* test = 0xB809E; *test = '\\';} 
+	//asm("mov $0x20, %al; \n\t outb %al, $0x20;");
+
+	int actualProcess = getActualProcess();
+	// Save EIP
+	unsigned int EIPActualProcess = 0x0; // TODO : Update tis value
+	processes[actualProcess].eip = EIPActualProcess;
+	if(processes[actualProcess + 1].created == 1){switchToProcessSameRing0(actualProcess+1);}
+	else{switchToProcessSameRing0(0);}
 }
 __attribute__((interrupt)) void defaultIRQHandler(struct interrupt_frame* frame)
 {

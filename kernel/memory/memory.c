@@ -15,39 +15,15 @@ void *memcpy(char *dst, char *src, int n)
 }
 
 void startProcesses(){
-	switchToProcess(0);
+	// TODO
+	return;
 }
 
-void switchToProcess(int process)
+void switchToProcessSameRing0(int process)
 {
-	int actualProcess = getActualProcess();
-	if (actualProcess > -1){ // We already executed at least one process
-		processes[actualProcess].active = 0;
-		// TODO : Save this process (acrualProcess) context
-		processes[process].active = 1;
-		if(processes[process].ring == processes[actualProcess].ring){
-			unsigned int cs = processes[process].cs;
-			unsigned int offset = processes[process].eip;
-			asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
-		}
-		else
-		{
-			// TODO : Switch ring & jmp to process
-		}
-	}
-	else{ // Still havnt executed any process
-		processes[process].active = 1;
-		if(processes[process].ring == 0)
-		{
-			unsigned int cs = processes[process].cs;
-			unsigned int offset = processes[process].eip;
-			asm volatile("push %0; push %1; lret;" :: "m"(cs), "m"(offset));
-		}
-		else
-		{
-			// TODO : Switch ring & jmp to process
-		}
-	}
+	processes[getActualProcess()].active = 0;
+	processes[process].active = 1;
+	asm("push %0; push %1; retf;" :: "m"(processes[process].cs), "m"(processes[process].eip));
 }
 
 int getActualProcess()
@@ -61,12 +37,8 @@ int getActualProcess()
 
 int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigned int size, unsigned int destination, unsigned int stackAddress, unsigned int kernelStackAddress, unsigned int stackSize){
 	int offset = 0;
-	for(int i = 0;i<100;i++){
-		if(processes[i].created == 1){offset = i;}
-	}
-	if(offset != 0){
-		offset = offset + 1;
-	}
+	for(int i = 0;i<99;i++){if(processes[i].created == 1){offset = i + 1;}}
+
 	processes[offset].ring = ring;
 	processes[offset].name = name;
 	processes[offset].eax = 0x0;

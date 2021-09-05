@@ -11,13 +11,12 @@ extern void setup_pic();
 extern void enable_interrupt();
 extern void disable_interrupt();
 
-struct interrupt_frame {
-    unsigned short ip;
-    unsigned short cs;
-    unsigned short flags;
-    unsigned short sp;
-    unsigned short ss;
-} __attribute__((packed));
+struct interrupt_frame
+{
+unsigned int P0;
+unsigned int P1;
+unsigned int P2;
+};
 
 struct idtDescriptor{
 unsigned short offset_0_15;
