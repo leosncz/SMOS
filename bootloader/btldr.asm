@@ -22,7 +22,7 @@ xor ax, ax
 mov bx, ax
 
 mov ah, 0x2
-mov al, 15d
+mov al, 50d
 mov ch, 0x0
 mov dh, 0x0
 mov cl, 2d

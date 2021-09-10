@@ -34,5 +34,7 @@ void setupIDT();
 void clockIRQHandler();
 __attribute__((interrupt)) void defaultIRQHandler(struct interrupt_frame* frame);
 __attribute__((interrupt)) void keyboardIRQHandler(struct interrupt_frame* frame);
+__attribute__((interrupt)) void printDebugTopLeft(struct interrupt_frame* frame); // Used for debugging
+__attribute__((interrupt)) void printDebugTopRight(struct interrupt_frame* frame); // Used for debugging
 
 #endif

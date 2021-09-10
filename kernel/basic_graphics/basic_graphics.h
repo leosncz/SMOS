@@ -15,8 +15,6 @@
 #define WHITE_ON_BLUE 0x97
 #define BLACK_ON_BLUE 0x90
 
-void printDebugTopLeft(); // Used for debugging
-void printDebugTopRight(); // Used for debugging
 void printCharacter(char character, int offset, int colorCode);
 void printString(char* string, int offset, int size, int colorCode);
 void clearScreenWhite();

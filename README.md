@@ -2,7 +2,7 @@
 Small &amp; Modular x86 Operating System
 ## What is SMOS
 It's an **unix-like** operating system, designed to be easily customizable by anyone to create its own OS.</br>
-It supports pagination, is preemptive and small GUI system to create window(s) for your appplication(s).</br><*br>
+It supports pagination, is preemptive and small GUI system to create window(s) for your appplication(s).</br></br>
 For now it is not usable and still in early development.
 
 ## What is working today ?
@@ -20,7 +20,7 @@ For now it is not usable and still in early development.
 ### System call
 All system calls are accessible to ring3 applications :</br>
 **0x30** : Print DEBUG on top-left corner, can be used to debug.
-
+**0x31** : Print DEBUG on top-right corner, can be used to debug.
 
 ### Build
 **Linux distro** (arm, x86, whatever architecture you want) is almost mandatory.</br>
