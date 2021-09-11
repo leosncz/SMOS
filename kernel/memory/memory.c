@@ -33,12 +33,12 @@ int createProcessFromRAM(int ring, char* name, unsigned int memcpyStart, unsigne
         processes[offset].ebx = 0x0;
         processes[offset].ecx = 0x0;
         processes[offset].edx = 0x0;
-	processes[offset].esp = stackSize;
+	processes[offset].esp = stackAddress + stackSize;
 	processes[offset].cs = addGDTCodeEntry(ring, destination, size);
 	processes[offset].ds = addGDTDataEntry(ring,destination,size);
 	processes[offset].ss = addGDTStackEntry(ring, stackAddress, stackSize);
-	processes[offset].ss0 = addGDTStackEntry(ring, kernelStackAddress, stackSize);
-	processes[offset].esp0 = stackSize;
+	processes[offset].ss0 = addGDTStackEntry(0, kernelStackAddress, stackSize);
+	processes[offset].esp0 = kernelStackAddress + stackSize;
 	processes[offset].eip = 0x0;
 
 	if(memcpyStart != destination){
