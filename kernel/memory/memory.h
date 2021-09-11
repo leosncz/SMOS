@@ -23,11 +23,11 @@ char* name;
 int ring;
 int active; // 0 = inactive 1 = active
 int created; // 0 = not created 1 = created
-unsigned int eip;
+unsigned int eip, eflags;
 unsigned int eax, ebx, ecx, edx;
-unsigned int esp;
-unsigned short cs,ds,ss;
-unsigned short ss0;
+unsigned int esp, ebp, esi, edi;
+unsigned int cs:16,ds:16,ss:16,fs:16,gs:16;
+unsigned int ss0:16;
 unsigned int esp0;
 };
 

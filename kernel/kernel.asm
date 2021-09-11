@@ -15,30 +15,9 @@ _start:
 jmp start
 
 clockIRQHandlerASM:
-; Save actual process context so "clockIRQHandler" will be able to save it inside of the process context struct
-mov eax, esp
-mov esi, [eax]
-mov dword [0x0], esi
+
+
 call clockIRQHandler
-
-;Next process CS is at 0x0 & EIP is at 0x4 & EFLAGS is at 0x8
-
-;EIP
-mov eax, [0x4]
-mov esi, esp
-mov dword [esi], eax
-;CS
-mov eax, [0x0]
-mov ebx, esp
-add ebx, 4
-mov esi, ebx
-mov dword [esi], eax
-;EFLAGS
-mov eax, [0x8]
-mov ebx, esp
-add ebx, 8
-mov esi, ebx
-mov dword [esi], eax
 
 mov al, 0x20
 out 0x20, al
